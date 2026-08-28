@@ -324,7 +324,7 @@ function PageHeader({
           )}
         </div>
         <Link to="/notes/new" className="btn-primary shrink-0 self-start sm:self-auto">
-          <Icon icon={PlusOutlined} size={18} color="var(--color-paper-3)" />
+          <Icon icon={PlusSolid} size={18} color="var(--color-paper-3)" />
           New Note
         </Link>
       </div>
