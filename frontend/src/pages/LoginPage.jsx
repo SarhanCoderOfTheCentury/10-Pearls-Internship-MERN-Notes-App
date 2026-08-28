@@ -3,7 +3,6 @@ import useAuth from "../hooks/useAuth";
 import { useForm } from "react-hook-form";
 import Button from "../components/Button";
 import Icon from "../components/Icon";
-import { Notebook1Outlined } from "@lineiconshq/free-icons";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -30,11 +29,8 @@ function LoginPage() {
     >
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div
-            className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl"
-            style={{ backgroundColor: "var(--color-accent-soft)" }}
-          >
-            <Icon icon={Notebook1Outlined} size={28} color="var(--color-accent)" />
+          <div className="mx-auto mb-4 flex justify-center">
+            <img src="/logo.png" alt="Notely Logo" className="h-16 w-auto object-contain" />
           </div>
           <h1
             className="font-display text-3xl font-semibold tracking-tight"

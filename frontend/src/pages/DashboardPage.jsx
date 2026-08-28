@@ -310,21 +310,24 @@ function PageHeader({
   return (
     <header className="space-y-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="min-w-0">
-          <h1
-            className="font-display text-3xl font-semibold tracking-tight sm:text-4xl"
-            style={{ color: "var(--color-ink)" }}
-          >
-            {title}
-          </h1>
-          {userName && (
-            <p className="mt-1 text-sm" style={{ color: "var(--color-ink-muted)" }}>
-              Welcome back, {userName}
-            </p>
-          )}
+        <div className="flex items-center gap-4 min-w-0">
+          <img src="/logo.png" alt="Notely Logo" className="h-12 w-auto object-contain" />
+          <div>
+            <h1
+              className="font-display text-3xl font-semibold tracking-tight sm:text-4xl"
+              style={{ color: "var(--color-ink)" }}
+            >
+              {title}
+            </h1>
+            {userName && (
+              <p className="mt-1 text-sm" style={{ color: "var(--color-ink-muted)" }}>
+                Welcome back, {userName}
+              </p>
+            )}
+          </div>
         </div>
         <Link to="/notes/new" className="btn-primary shrink-0 self-start sm:self-auto">
-          <Icon icon={PlusSolid} size={18} color="var(--color-paper-3)" />
+          <Icon icon={PlusSolid} size={18} />
           New Note
         </Link>
       </div>
