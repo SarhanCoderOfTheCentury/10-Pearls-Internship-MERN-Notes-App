@@ -1,8 +1,10 @@
 import express from "express";
-import { getHealth } from "../controllers/health.controller.js";
+import { getHealth, getDatabaseHealth } from "../controllers/health.controller.js";
 
 const router = express.Router();
 
 router.get("/", getHealth);
+router.get("/dbHealth", getDatabaseHealth);
 
-export default router
+export default router;
+
