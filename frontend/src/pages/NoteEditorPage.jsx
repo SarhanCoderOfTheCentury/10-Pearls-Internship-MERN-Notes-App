@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import RichTextEditor from "../components/RichTextEditor";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { createNote, getNote, updateNote } from "../services/note.service";
+import { createNote, getNote, updateNote, toggleFavorite } from "../services/note.service";
 import useToast from "../hooks/useToast";
 import useUnsavedChanges from "../hooks/useUnsavedChanges";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
@@ -9,7 +9,7 @@ import ErrorState from "../components/ui/ErrorState";
 import Button from "../components/Button";
 import Icon from "../components/Icon";
 import Spinner from "../components/ui/Spinner";
-import { ArrowLeftOutlined, PlusSolid } from "@lineiconshq/free-icons";
+import { ArrowLeftOutlined, PlusSolid, PlusOutlined } from "@lineiconshq/free-icons";
 
 const emptyContent = {
   type: "doc",
@@ -31,23 +31,25 @@ function NoteEditorPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState(emptyContent);
   const [tag, setTag] = useState("none");
+  const [isFavorite, setIsFavorite] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const initialDataRef = useRef({ title: "", content: emptyContent, tag: "none" });
+  const initialDataRef = useRef({ title: "", content: emptyContent, tag: "none", isFavorite: false });
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
 
   const isDirty =
     title !== initialDataRef.current.title ||
     tag !== initialDataRef.current.tag ||
+    isFavorite !== initialDataRef.current.isFavorite ||
     JSON.stringify({ title, content, tag }) !==
-      JSON.stringify(initialDataRef.current);
+      JSON.stringify({ title: initialDataRef.current.title, content: initialDataRef.current.content, tag: initialDataRef.current.tag });
 
   useUnsavedChanges(isDirty);
 
   const loadNote = useCallback(async () => {
     if (!isEditing) {
-      initialDataRef.current = { title: "", content: emptyContent, tag: "none" };
+      initialDataRef.current = { title: "", content: emptyContent, tag: "none", isFavorite: false };
       return;
     }
 
@@ -61,14 +63,17 @@ function NoteEditorPage() {
         const loadedTitle = noteData.title || "";
         const loadedContent = noteData.content || emptyContent;
         const loadedTag = noteData.tag || "none";
+        const loadedFavorite = noteData.isFavorite || false;
 
         setTitle(loadedTitle);
         setContent(loadedContent);
         setTag(loadedTag);
+        setIsFavorite(loadedFavorite);
         initialDataRef.current = {
           title: loadedTitle,
           content: loadedContent,
           tag: loadedTag,
+          isFavorite: loadedFavorite,
         };
       }
     } catch (err) {
@@ -107,10 +112,18 @@ function NoteEditorPage() {
     try {
       if (isEditing) {
         await updateNote(id, notePayload);
-        initialDataRef.current = { title: title.trim(), content, tag };
+        initialDataRef.current = { title: title.trim(), content, tag, isFavorite };
         if (toast) toast("Note updated successfully", "success");
       } else {
-        await createNote(notePayload);
+        const response = await createNote(notePayload);
+        const newNoteId = response?.data?._id || response?._id;
+        if (newNoteId && isFavorite) {
+          try {
+            await toggleFavorite(newNoteId);
+          } catch (e) {
+            console.error("Failed to favorite new note");
+          }
+        }
         if (toast) toast("Note created successfully", "success");
       }
       navigate("/dashboard");
@@ -199,26 +212,53 @@ function NoteEditorPage() {
           required
         />
 
-        <div className="flex items-center gap-3">
-          <label
-            htmlFor="note-tag"
-            className="text-sm font-medium shrink-0"
-            style={{ color: "var(--color-ink-muted)" }}
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
+            <label
+              htmlFor="note-tag"
+              className="text-sm font-medium shrink-0"
+              style={{ color: "var(--color-ink-muted)" }}
+            >
+              Tag
+            </label>
+            <select
+              id="note-tag"
+              value={tag}
+              onChange={(e) => setTag(e.target.value)}
+              className="select-field w-auto min-w-[140px]"
+            >
+              {TAG_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            type="button"
+            onClick={async () => {
+              if (isEditing) {
+                try {
+                  await toggleFavorite(id);
+                  setIsFavorite(!isFavorite);
+                  initialDataRef.current.isFavorite = !isFavorite;
+                  if (toast) toast(isFavorite ? "Removed from favorites" : "Added to favorites", "success");
+                } catch (err) {
+                  if (toast) toast("Failed to update favorite", "error");
+                }
+              } else {
+                setIsFavorite(!isFavorite);
+              }
+            }}
+            className="flex items-center gap-2 text-sm font-medium focus-ring rounded-md p-1 transition-colors hover:bg-paper-2"
+            style={{ color: isFavorite ? "var(--color-accent)" : "var(--color-ink-muted)" }}
           >
-            Tag
-          </label>
-          <select
-            id="note-tag"
-            value={tag}
-            onChange={(e) => setTag(e.target.value)}
-            className="select-field w-auto min-w-[140px]"
-          >
-            {TAG_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={isFavorite ? "#1a1a1a" : "none"} stroke={isFavorite ? "#1a1a1a" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            {isFavorite ? "Favorited" : "Add to favorites"}
+          </button>
         </div>
 
         <RichTextEditor value={content} onChange={setContent} />

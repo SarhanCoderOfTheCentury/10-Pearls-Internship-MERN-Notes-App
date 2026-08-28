@@ -5,8 +5,6 @@ import Spinner from "./ui/Spinner";
 import Icon from "./Icon";
 import { formatRelativeDate } from "../utils/formatRelativeDate";
 import {
-  StarFatOutlined,
-  StarFatSolid,
   FilePencilOutlined,
   Trash3Outlined,
 } from "@lineiconshq/free-icons";
@@ -65,39 +63,38 @@ function NoteCard({ note, onDelete, onToggleFavorite, deleting }) {
         boxShadow: "var(--shadow-sm)",
       }}
     >
+      <button
+        type="button"
+        onClick={handleFavoriteClick}
+        disabled={togglingFav}
+        aria-label={
+          note.isFavorite ? "Remove from favorites" : "Add to favorites"
+        }
+        title={
+          note.isFavorite ? "Remove from favorites" : "Add to favorites"
+        }
+        className="absolute top-3 right-3 shrink-0 rounded-full p-1.5 transition-transform hover:scale-110 focus-ring disabled:opacity-50 z-10"
+        style={{ 
+          backgroundColor: note.isFavorite ? "var(--color-accent-soft)" : "var(--color-paper-2)", 
+          boxShadow: "var(--shadow-sm)" 
+        }}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill={note.isFavorite ? "#1a1a1a" : "none"} stroke={note.isFavorite ? "#1a1a1a" : "#6b7280"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+      </button>
+
       <Link
         to={`/notes/${note._id}/edit`}
-        className="flex flex-1 flex-col p-5 focus-ring rounded-xl"
+        className="flex flex-1 flex-col p-5 focus-ring rounded-xl pt-6"
       >
-        <div className="mb-3 flex items-start justify-between gap-3">
+        <div className="mb-3 pr-8">
           <h2
             className="font-display text-lg font-semibold leading-snug line-clamp-2 min-w-0"
             style={{ color: "var(--color-ink)" }}
           >
             {note.title}
           </h2>
-          <button
-            type="button"
-            onClick={handleFavoriteClick}
-            disabled={togglingFav}
-            aria-label={
-              note.isFavorite ? "Remove from favorites" : "Add to favorites"
-            }
-            title={
-              note.isFavorite ? "Remove from favorites" : "Add to favorites"
-            }
-            className="shrink-0 rounded-md p-1 transition-transform hover:scale-110 focus-ring disabled:opacity-50"
-          >
-            <Icon
-              icon={note.isFavorite ? StarFatSolid : StarFatOutlined}
-              size={20}
-              color={
-                note.isFavorite
-                  ? "var(--color-accent)"
-                  : "var(--color-ink-faint)"
-              }
-            />
-          </button>
         </div>
 
         {tagStyle && (

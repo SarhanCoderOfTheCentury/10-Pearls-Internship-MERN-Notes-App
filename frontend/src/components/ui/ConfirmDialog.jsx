@@ -28,7 +28,7 @@ function ConfirmDialog({
       <div
         className="w-full max-w-sm rounded-2xl border p-6"
         style={{
-          backgroundColor: "var(--color-paper-3)",
+          backgroundColor: "#ffffff",
           borderColor: "var(--color-border)",
           boxShadow: "var(--shadow-lg)",
         }}

@@ -5,8 +5,6 @@ import Icon from "./Icon";
 import Button from "./Button";
 import {
   Notebook1Outlined,
-  StarFatOutlined,
-  StarFatSolid,
   PlusOutlined,
   Briefcase1Outlined,
   User4Outlined,
@@ -14,6 +12,15 @@ import {
   ExitOutlined,
   FileMultipleOutlined,
 } from "@lineiconshq/free-icons";
+
+function StarIcon({ size = 20, filled = false, color = "currentColor" }) {
+  const actualColor = filled ? color : "#6b7280";
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={filled ? actualColor : "none"} stroke={actualColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+    </svg>
+  );
+}
 
 const MAIN_NAV = [
   {
@@ -26,8 +33,9 @@ const MAIN_NAV = [
   {
     to: "/dashboard?favorites=true",
     label: "Favorites",
-    icon: StarFatOutlined,
-    activeIcon: StarFatSolid,
+    renderIcon: (isActive) => (
+      <StarIcon size={20} filled={isActive} color={isActive ? "var(--color-accent)" : "currentColor"} />
+    ),
     match: (_, params) => params.get("favorites") === "true",
   },
 ];
@@ -53,7 +61,7 @@ const TAG_NAV = [
   },
 ];
 
-function NavItem({ to, label, icon, activeIcon, match, onNavigate }) {
+function NavItem({ to, label, icon, activeIcon, renderIcon, match, onNavigate }) {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const isActive = match
@@ -74,11 +82,15 @@ function NavItem({ to, label, icon, activeIcon, match, onNavigate }) {
       }
       aria-current={isActive ? "page" : undefined}
     >
-      <Icon
-        icon={isActive && activeIcon ? activeIcon : icon}
-        size={20}
-        color={isActive ? "var(--color-accent)" : "currentColor"}
-      />
+      {renderIcon ? (
+        renderIcon(isActive)
+      ) : (
+        <Icon
+          icon={isActive && activeIcon ? activeIcon : icon}
+          size={20}
+          color={isActive ? "var(--color-accent)" : "currentColor"}
+        />
+      )}
       <span className="min-w-0 truncate">{label}</span>
     </Link>
   );
@@ -110,17 +122,15 @@ export const Sidebar = () => {
       }}
     >
       <div
-        className="flex h-[var(--header-height)] shrink-0 items-center gap-2.5 border-b px-5"
+        className="flex h-[var(--header-height)] shrink-0 items-center border-b px-5"
         style={{ borderColor: "var(--color-border)" }}
       >
-        <Icon icon={Notebook1Outlined} size={26} color="var(--color-accent)" />
         <Link
           to="/dashboard"
           onClick={closeSidebar}
-          className="font-display text-xl font-semibold tracking-tight"
-          style={{ color: "var(--color-ink)" }}
+          className="flex items-center"
         >
-          Notely
+          <img src="/logo.png" alt="Notely Logo" className="h-13 w-auto object-contain" />
         </Link>
       </div>
 

@@ -46,7 +46,7 @@ export default function RichTextEditor({ value, onChange }) {
   if (!editor) return null;
 
   const toolbarBtn = (isActive) =>
-    `flex h-8 w-8 items-center justify-center rounded-md transition-colors focus-ring ${
+    `flex h-10 w-10 items-center justify-center rounded-md transition-colors focus-ring ${
       isActive ? "" : "hover:bg-paper-2"
     }`;
 
@@ -60,7 +60,7 @@ export default function RichTextEditor({ value, onChange }) {
       }}
     >
       <div
-        className="flex flex-wrap items-center gap-1 border-b p-2"
+        className="flex flex-wrap items-center gap-2 border-b p-3"
         style={{
           borderColor: "var(--color-border)",
           backgroundColor: "var(--color-paper-2)",
@@ -69,27 +69,21 @@ export default function RichTextEditor({ value, onChange }) {
         <Button
           type="button"
           variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={toolbarBtn(editor.isActive("bold"))}
-          style={
-            editor.isActive("bold")
-              ? { backgroundColor: "var(--color-accent-soft)" }
-              : undefined
-          }
+          style={editor.isActive("bold") ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
           aria-label="Bold"
         >
-          <Icon icon={BoldOutlined} size={18} />
+          <Icon icon={BoldOutlined} size={22} />
         </Button>
         <Button
           type="button"
           variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`${toolbarBtn(editor.isActive("italic"))} w-auto px-2 text-sm font-medium`}
-          style={
-            editor.isActive("italic")
-              ? { backgroundColor: "var(--color-accent-soft)", fontStyle: "italic" }
-              : { fontStyle: "italic" }
-          }
+          className={`${toolbarBtn(editor.isActive("italic"))} w-auto px-3 text-lg font-bold`}
+          style={editor.isActive("italic") ? { backgroundColor: "var(--color-accent-soft)", fontStyle: "italic", color: "var(--color-accent)" } : { fontStyle: "italic", color: "var(--color-ink)" }}
           aria-label="Italic"
         >
           I
@@ -97,63 +91,157 @@ export default function RichTextEditor({ value, onChange }) {
         <Button
           type="button"
           variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          className={`${toolbarBtn(editor.isActive("strike"))} w-auto px-3 text-lg font-bold line-through`}
+          style={editor.isActive("strike") ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
+          aria-label="Strikethrough"
+        >
+          S
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => editor.chain().focus().toggleCode().run()}
+          className={`${toolbarBtn(editor.isActive("code"))} w-auto px-3 text-sm font-bold font-mono`}
+          style={editor.isActive("code") ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
+          aria-label="Code"
+        >
+          &lt;/&gt;
+        </Button>
+
+        <span className="mx-1 h-6 w-px" style={{ backgroundColor: "var(--color-border-strong)" }} />
+
+        <Button
+          type="button"
+          variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          className={`${toolbarBtn(editor.isActive("heading", { level: 1 }))} w-auto px-3 text-base font-bold`}
+          style={editor.isActive("heading", { level: 1 }) ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
+        >
+          H1
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={`${toolbarBtn(editor.isActive("heading", { level: 2 }))} w-auto px-2 text-xs font-semibold`}
-          style={
-            editor.isActive("heading", { level: 2 })
-              ? { backgroundColor: "var(--color-accent-soft)" }
-              : undefined
-          }
-          aria-label="Heading"
+          className={`${toolbarBtn(editor.isActive("heading", { level: 2 }))} w-auto px-3 text-base font-bold`}
+          style={editor.isActive("heading", { level: 2 }) ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
         >
           H2
         </Button>
-        <span className="mx-1 h-5 w-px" style={{ backgroundColor: "var(--color-border)" }} />
         <Button
           type="button"
           variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          className={`${toolbarBtn(editor.isActive("heading", { level: 3 }))} w-auto px-3 text-base font-bold`}
+          style={editor.isActive("heading", { level: 3 }) ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
+        >
+          H3
+        </Button>
+
+        <span className="mx-1 h-6 w-px" style={{ backgroundColor: "var(--color-border-strong)" }} />
+
+        <Button
+          type="button"
+          variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={toolbarBtn(editor.isActive("bulletList"))}
-          style={
-            editor.isActive("bulletList")
-              ? { backgroundColor: "var(--color-accent-soft)" }
-              : undefined
-          }
+          style={editor.isActive("bulletList") ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
           aria-label="Bullet list"
         >
-          <Icon icon={AlignTextLeftOutlined} size={18} />
+          <Icon icon={AlignTextLeftOutlined} size={22} />
         </Button>
         <Button
           type="button"
           variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={toolbarBtn(editor.isActive("orderedList"))}
-          style={
-            editor.isActive("orderedList")
-              ? { backgroundColor: "var(--color-accent-soft)" }
-              : undefined
-          }
+          style={editor.isActive("orderedList") ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
           aria-label="Numbered list"
         >
-          <Icon icon={AgendaOutlined} size={18} />
+          <Icon icon={AgendaOutlined} size={22} />
         </Button>
         <Button
           type="button"
           variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+          className={`${toolbarBtn(editor.isActive("blockquote"))} w-auto px-3 text-lg font-bold`}
+          style={editor.isActive("blockquote") ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
+          aria-label="Blockquote"
+        >
+          &ldquo;&rdquo;
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
           onClick={addLink}
           className={toolbarBtn(editor.isActive("link"))}
-          style={
-            editor.isActive("link")
-              ? { backgroundColor: "var(--color-accent-soft)" }
-              : undefined
-          }
+          style={editor.isActive("link") ? { backgroundColor: "var(--color-accent-soft)", color: "var(--color-accent)" } : { color: "var(--color-ink)" }}
           aria-label="Add link"
         >
-          <Icon icon={Link2AngularRightOutlined} size={18} />
+          <Icon icon={Link2AngularRightOutlined} size={22} />
+        </Button>
+
+        <span className="mx-1 h-6 w-px" style={{ backgroundColor: "var(--color-border-strong)" }} />
+
+        <Button
+          type="button"
+          variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => editor.chain().focus().setHorizontalRule().run()}
+          className={`${toolbarBtn(false)} w-auto px-3 text-lg font-bold`}
+          style={{ color: "var(--color-ink)" }}
+          aria-label="Horizontal Rule"
+        >
+          &mdash;
+        </Button>
+
+        <span className="flex-1" />
+
+        <Button
+          type="button"
+          variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => editor.chain().focus().undo().run()}
+          disabled={!editor.can().undo()}
+          className={`${toolbarBtn(false)} text-lg`}
+          style={{ color: "var(--color-ink)" }}
+          aria-label="Undo"
+        >
+          &#8634;
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => editor.chain().focus().redo().run()}
+          disabled={!editor.can().redo()}
+          className={`${toolbarBtn(false)} text-lg`}
+          style={{ color: "var(--color-ink)" }}
+          aria-label="Redo"
+        >
+          &#8635;
         </Button>
       </div>
 
-      <div className="p-5 min-h-[300px]">
+      <div 
+        className="p-5 min-h-[300px] cursor-text" 
+        style={{ userSelect: "text", WebkitUserSelect: "text" }}
+        onClick={() => {
+          if (!editor.isFocused) {
+            editor.commands.focus();
+          }
+        }}
+      >
         <EditorContent editor={editor} />
       </div>
     </div>

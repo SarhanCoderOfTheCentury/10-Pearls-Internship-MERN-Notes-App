@@ -44,8 +44,7 @@ export const Navbar = () => {
           className="flex items-center gap-2 font-display text-lg font-semibold tracking-tight lg:hidden"
           style={{ color: "var(--color-ink)" }}
         >
-          <Icon icon={Notebook1Outlined} size={22} color="var(--color-accent)" />
-          Notely
+        <img src="/logo.png" alt="Notely Logo" className="h-12 w-auto object-contain" />
         </Link>
       </div>
 

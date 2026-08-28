@@ -182,6 +182,12 @@ body {
     color: var(--color-ink);
   }
 
+  .ProseMirror ::selection,
+  .ProseMirror *::selection {
+    background-color: #b3d4fc;
+    color: inherit;
+  }
+
   .ProseMirror p {
     margin: 0 0 0.75em;
   }
@@ -205,5 +211,39 @@ body {
 
   .ProseMirror strong {
     font-weight: 600;
+  }
+
+  .ProseMirror h1 {
+    font-size: 1.5rem;
+    margin: 1.5em 0 0.5em;
+    font-weight: 700;
+  }
+
+  .ProseMirror h3 {
+    font-size: 1.125rem;
+    margin: 1.25em 0 0.5em;
+    font-weight: 600;
+  }
+
+  .ProseMirror blockquote {
+    border-left: 3px solid var(--color-border-strong);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--color-ink-muted);
+    font-style: italic;
+  }
+
+  .ProseMirror code {
+    background-color: var(--color-paper-2);
+    padding: 0.2em 0.4em;
+    border-radius: 4px;
+    font-size: 0.875em;
+    font-family: var(--font-mono);
+  }
+
+  .ProseMirror hr {
+    border: none;
+    border-top: 1px solid var(--color-border-strong);
+    margin: 2rem 0;
   }
 }
