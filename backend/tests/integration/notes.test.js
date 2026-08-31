@@ -209,7 +209,7 @@ describe("Notes API", () => {
             .set("Authorization", `Bearer ${token}`)
             .send({ title: "User A private note", content: "secret" });
 
-        const noteId = createResponse.body.data._id;
+        const noteId = createResponse.body.data.note._id;
 
         // Register and login as User B
         const tokenB = await registerAndLogin({

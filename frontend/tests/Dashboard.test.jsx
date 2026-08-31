@@ -30,22 +30,27 @@ vi.mock('../src/services/note.service', () => ({
 }));
 
 // ─── Mock useAuth ─────────────────────────────────────────────────────────────
+const mockAuthReturn = {
+  user: { name: 'Test User', _id: 'u1' },
+  loading: false,
+  isAuthenticated: true,
+  loginUser: vi.fn(),
+  logoutUser: vi.fn(),
+};
+
 vi.mock('../src/hooks/useAuth', () => ({
-  default: () => ({
-    user: { name: 'Test User', _id: 'u1' },
-    loading: false,
-    isAuthenticated: true,
-    loginUser: vi.fn(),
-    logoutUser: vi.fn(),
-  }),
+  default: () => mockAuthReturn,
 }));
 
 // ─── Mock useToast ────────────────────────────────────────────────────────────
+const mockToastFn = Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() });
+const mockToastReturn = {
+  toast: mockToastFn,
+  showToast: null,
+};
+
 vi.mock('../src/hooks/useToast', () => ({
-  default: () => ({
-    toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
-    showToast: null,
-  }),
+  default: () => mockToastReturn,
 }));
 
 // ─── Shared note data ─────────────────────────────────────────────────────────
@@ -68,16 +73,30 @@ const NOTE_2 = {
 
 /**
  * DashboardPage calls `getNotes()` (from note.service.js) which returns the
- * raw data object. The component accesses: data.notes, data.page, data.limit,
- * data.totalPages, data.totalNotes.
+ * raw data object containing notes and pagination metadata.
  */
 function makeNotesResponse(notes = [], pageOverrides = {}) {
+  const page = pageOverrides.page || 1;
+  const limit = pageOverrides.limit || 10;
+  const total = pageOverrides.total !== undefined
+    ? pageOverrides.total
+    : (pageOverrides.totalNotes !== undefined ? pageOverrides.totalNotes : notes.length);
+  const totalPages = pageOverrides.totalPages !== undefined
+    ? pageOverrides.totalPages
+    : (Math.ceil(total / limit) || 1);
+
   return {
     notes,
-    page: 1,
-    limit: 10,
-    totalPages: 1,
-    totalNotes: notes.length,
+    page,
+    limit,
+    totalPages,
+    totalNotes: total,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages,
+    },
     ...pageOverrides,
   };
 }

@@ -2,7 +2,7 @@
 
 const mongoURI = process.env.MONGODB_URI || process.env.MONGO_URI;
 
-const requiredEnvironmentVariables = ["NODE_ENV", "PORT", "JWT_SECRET", "JWT_EXPIRES_IN"];
+const requiredEnvironmentVariables = ["JWT_SECRET", "JWT_EXPIRES_IN"];
 
 //checking if all the required environment variables are present
 for (const variable of requiredEnvironmentVariables) {

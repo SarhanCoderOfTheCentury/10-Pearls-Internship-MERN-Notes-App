@@ -84,12 +84,17 @@ function DashboardPage() {
       });
       const notesList = Array.isArray(notesData?.notes) ? notesData.notes : [];
       setNotes(notesList);
-      const pag = notesData?.pagination || {};
+      const pag = notesData?.pagination || notesData || {};
+      const pageNum = pag.page || notesData?.page || 1;
+      const limitNum = pag.limit || notesData?.limit || 12;
+      const totalNum = pag.total ?? notesData?.totalNotes ?? notesData?.total ?? notesList.length;
+      const totalPagesNum = pag.totalPages ?? notesData?.totalPages ?? (totalNum > 0 ? Math.ceil(totalNum / limitNum) : 0);
+
       setPagination({
-        page: pag.page || 1,
-        limit: pag.limit || 12,
-        total: pag.total || 0,
-        totalPages: pag.totalPages || 0,
+        page: pageNum,
+        limit: limitNum,
+        total: totalNum,
+        totalPages: totalPagesNum,
       });
     } catch (err) {
       console.error("Error fetching notes", err);

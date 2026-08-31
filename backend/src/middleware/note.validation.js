@@ -10,8 +10,11 @@ const createNoteValidation = [
         .isLength({ min: 6, max: 50 })
         .withMessage("Title must be between 6 and 50 characters"),
     body("content")
-        .isObject()
-        .withMessage("Content must be a valid JSON object"),
+        .custom((value) => {
+            if (value === undefined || value === null || value === "") return false;
+            return typeof value === "string" || typeof value === "object";
+        })
+        .withMessage("Content must be a valid string or object"),
     body("tag")
         .optional()
         .isIn(VALID_TAGS)
@@ -29,8 +32,11 @@ const updateNoteValidaion = [
         .isLength({ min: 6, max: 50 })
         .withMessage("Title must be between 6 and 50 characters"),
     body("content")
-        .isObject()
-        .withMessage("Content must be a valid JSON object"),
+        .custom((value) => {
+            if (value === undefined || value === null || value === "") return false;
+            return typeof value === "string" || typeof value === "object";
+        })
+        .withMessage("Content must be a valid string or object"),
     body("tag")
         .optional()
         .isIn(VALID_TAGS)

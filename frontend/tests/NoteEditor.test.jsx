@@ -31,10 +31,13 @@ vi.mock('../src/services/note.service', () => ({
 }));
 
 // ─── Mock useToast ────────────────────────────────────────────────────────────
+const mockToastFn = Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() });
+const mockToastReturn = {
+  toast: mockToastFn,
+};
+
 vi.mock('../src/hooks/useToast', () => ({
-  default: () => ({
-    toast: Object.assign(vi.fn(), { success: vi.fn(), error: vi.fn() }),
-  }),
+  default: () => mockToastReturn,
 }));
 
 // ─── Mock useUnsavedChanges ───────────────────────────────────────────────────

@@ -6,6 +6,8 @@ export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 20,
     message: "Too many requests, please try again later",
+    // skip the rate limiting in test mode or if the test mongodb uri is set to allow the tests to run
+    skip: () => process.env.NODE_ENV === "test" || (Boolean(process.env.TEST_MONGODB_URI) && process.env.NODE_ENV !== "production"),
     // Return rate limit info in the `RateLimit-*` headers
     standardHeaders: true,
     // Disable the `X-RateLimit-*` headers
