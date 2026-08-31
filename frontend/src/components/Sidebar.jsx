@@ -7,10 +7,14 @@ import {
   Notebook1Outlined,
   PlusOutlined,
   Briefcase1Outlined,
+  Briefcase1Solid,
   User4Outlined,
+  User4Solid,
   Bulb2Outlined,
+  Bulb2Solid,
   ExitOutlined,
   FileMultipleOutlined,
+  FileMultipleSolid,
 } from "@lineiconshq/free-icons";
 
 function StarIcon({ size = 20, filled = false, color = "currentColor" }) {
@@ -27,6 +31,7 @@ const MAIN_NAV = [
     to: "/dashboard",
     label: "All Notes",
     icon: FileMultipleOutlined,
+    activeIcon: FileMultipleSolid,
     match: (pathname, params) =>
       pathname === "/dashboard" && !params.get("favorites") && !params.get("tag"),
   },
@@ -45,18 +50,21 @@ const TAG_NAV = [
     to: "/dashboard?tag=work",
     label: "Work",
     icon: Briefcase1Outlined,
+    activeIcon: Briefcase1Solid,
     match: (_, params) => params.get("tag") === "work",
   },
   {
     to: "/dashboard?tag=personal",
     label: "Personal",
     icon: User4Outlined,
+    activeIcon: User4Solid,
     match: (_, params) => params.get("tag") === "personal",
   },
   {
     to: "/dashboard?tag=idea",
     label: "Ideas",
     icon: Bulb2Outlined,
+    activeIcon: Bulb2Solid,
     match: (_, params) => params.get("tag") === "idea",
   },
 ];
@@ -67,6 +75,8 @@ function NavItem({ to, label, icon, activeIcon, renderIcon, match, onNavigate })
   const isActive = match
     ? match(location.pathname, params)
     : location.pathname === to;
+
+  const currentIcon = isActive ? (activeIcon || icon) : icon;
 
   return (
     <Link
@@ -86,7 +96,7 @@ function NavItem({ to, label, icon, activeIcon, renderIcon, match, onNavigate })
         renderIcon(isActive)
       ) : (
         <Icon
-          icon={isActive && activeIcon ? activeIcon : icon}
+          icon={currentIcon}
           size={20}
           color={isActive ? "var(--color-accent)" : "currentColor"}
         />
@@ -191,7 +201,7 @@ export const Sidebar = () => {
             aria-current={isProfileActive ? "page" : undefined}
           >
             <Icon
-              icon={User4Outlined}
+              icon={isProfileActive ? User4Solid : User4Outlined}
               size={20}
               color={isProfileActive ? "var(--color-accent)" : "currentColor"}
             />
