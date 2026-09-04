@@ -172,68 +172,264 @@ body {
     @apply mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8;
   }
 
-  /* TipTap editor prose */
-  .ProseMirror {
+  /* ============================================================
+     Note editor shell
+     ============================================================ */
+
+  .note-editor {
+    position: relative;
+    border-radius: 14px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-paper-3);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .note-editor:focus-within {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 1px var(--color-accent);
+  }
+
+  /* ============================================================
+     Toolbar
+     ============================================================ */
+
+  .note-editor-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+    padding: 6px;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-paper-2);
+  }
+
+  .toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .toolbar-divider {
+    width: 1px;
+    height: 22px;
+    margin: 0 6px;
+    background-color: var(--color-border-strong);
+    flex-shrink: 0;
+  }
+
+  .toolbar-spacer {
+    flex: 1 1 auto;
+    /* forces undo/redo to the right on wide toolbars; on wrap it just
+       collapses to 0, so nothing breaks on narrow screens */
+    min-width: 8px;
+  }
+
+  /*
+    Every toolbar button — icon or text — shares one box. This is the
+    actual fix for the "weird" look: before, icon buttons were fixed
+    40x40px squares while text buttons (H1, italic "I", strike "S")
+    were auto-width with different padding and font sizes, so the row
+    had no shared baseline or rhythm. Now everything is a min 34x34
+    box that can grow for text content but never shrinks below it.
+  */
+  .toolbar-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 8px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-ink-muted);
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease;
+  }
+
+  .toolbar-btn:hover:not(:disabled) {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  .toolbar-btn:focus-visible {
     outline: none;
-    min-height: 280px;
+    box-shadow: 0 0 0 2px var(--color-paper-2), 0 0 0 4px var(--color-focus);
+  }
+
+  .toolbar-btn[data-active="true"] {
+    background-color: var(--color-accent-soft);
+    color: var(--color-accent);
+  }
+
+  .toolbar-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .toolbar-btn-text {
+    font-size: 12.5px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  .toolbar-btn-italic {
+    font-style: italic;
+    font-size: 15px;
+    font-family: var(--font-body);
+  }
+
+  /* ============================================================
+     Link popover — replaces window.prompt()
+     ============================================================ */
+
+  .link-popover {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-paper-2);
+  }
+
+  .link-popover-input {
+    flex: 1 1 auto;
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 7px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-paper-3);
+    color: var(--color-ink);
+    font-size: 13px;
+  }
+
+  .link-popover-input:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+
+  .link-popover-confirm {
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 7px;
+    border: none;
+    background-color: var(--color-accent);
+    color: var(--color-paper-3);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .link-popover-cancel {
+    height: 32px;
+    padding: 0 10px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--color-ink-muted);
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .link-popover-cancel:hover {
+    color: var(--color-ink);
+  }
+
+  /* ============================================================
+     Document body
+     ============================================================ */
+
+  .note-editor-body {
+    padding: 20px 22px;
+    min-height: 300px;
+    cursor: text;
+  }
+
+  .prose-editor-surface {
+    outline: none;
     font-family: var(--font-body);
     font-size: 0.9375rem;
     line-height: 1.7;
     color: var(--color-ink);
   }
 
-  .ProseMirror ::selection,
-  .ProseMirror *::selection {
-    background-color: #b3d4fc;
-    color: inherit;
-  }
-
-  .ProseMirror p {
+  .prose-editor-surface p {
     margin: 0 0 0.75em;
   }
 
-  .ProseMirror h2 {
+  .prose-editor-surface p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: var(--color-ink-faint);
+    pointer-events: none;
+  }
+
+  .prose-editor-surface h1 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 1.4em 0 0.5em;
+    letter-spacing: -0.02em;
+  }
+
+  .prose-editor-surface h2 {
+    font-family: var(--font-display);
     font-size: 1.25rem;
+    font-weight: 700;
     margin: 1.25em 0 0.5em;
+    letter-spacing: -0.02em;
   }
 
-  .ProseMirror ul,
-  .ProseMirror ol {
-    padding-left: 1.5em;
+  .prose-editor-surface h3 {
+    font-family: var(--font-display);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    margin: 1.1em 0 0.4em;
+  }
+
+  .prose-editor-surface h1:first-child,
+  .prose-editor-surface h2:first-child,
+  .prose-editor-surface h3:first-child {
+    margin-top: 0;
+  }
+
+  .prose-editor-surface ul,
+  .prose-editor-surface ol {
+    padding-left: 1.4em;
     margin: 0 0 0.75em;
   }
 
-  .ProseMirror a {
+  .prose-editor-surface li {
+    margin: 0.2em 0;
+  }
+
+  .prose-editor-surface a {
     color: var(--color-accent);
     text-decoration: underline;
     text-underline-offset: 2px;
+    cursor: pointer;
   }
 
-  .ProseMirror strong {
-    font-weight: 600;
+  .prose-editor-surface strong {
+    font-weight: 650;
   }
 
-  .ProseMirror h1 {
-    font-size: 1.5rem;
-    margin: 1.5em 0 0.5em;
-    font-weight: 700;
-  }
-
-  .ProseMirror h3 {
-    font-size: 1.125rem;
-    margin: 1.25em 0 0.5em;
-    font-weight: 600;
-  }
-
-  .ProseMirror blockquote {
-    border-left: 3px solid var(--color-border-strong);
+  .prose-editor-surface blockquote {
+    border-left: 3px solid var(--color-accent);
     padding-left: 1rem;
-    margin: 1rem 0;
+    margin: 1em 0;
     color: var(--color-ink-muted);
     font-style: italic;
   }
 
-  .ProseMirror code {
+  .prose-editor-surface code {
     background-color: var(--color-paper-2);
     padding: 0.2em 0.4em;
     border-radius: 4px;
@@ -241,9 +437,14 @@ body {
     font-family: var(--font-mono);
   }
 
-  .ProseMirror hr {
+  .prose-editor-surface hr {
     border: none;
     border-top: 1px solid var(--color-border-strong);
-    margin: 2rem 0;
+    margin: 1.75rem 0;
+  }
+
+  .prose-editor-surface ::selection {
+    background-color: var(--color-accent-soft);
+    color: inherit;
   }
 }
