@@ -16,6 +16,7 @@
     "@lineiconshq/react-lineicons": "^1.0.5",
     "@tailwindcss/vite": "^4.3.3",
     "@tiptap/extension-link": "^3.30.2",
+    "@tiptap/extension-placeholder": "^3.30.5",
     "@tiptap/react": "^3.30.2",
     "@tiptap/starter-kit": "^3.30.2",
     "react": "^19.2.8",
